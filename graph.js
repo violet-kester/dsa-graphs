@@ -79,37 +79,77 @@ class Graph {
 
 
     while (toVisitStack.length > 0) {
-      console.log("visit stack length:", toVisitStack.length);
-      console.log("to visit stack:", toVisitStack);
-
       let current = toVisitStack.pop();
 
-      console.log("current node=", current);
       if (!visitedNodesStack.has(current)) {
         visitedNodesStack.add(current);
         results.push(current.value);
       }
-      console.log("visitedNodesStack after adding=", visitedNodesStack);
 
       // add all neighbors to to visit stack if they haven't been visited
       for (let neighbor of current.adjacent) {
         if (!visitedNodesStack.has(neighbor)) {
-          console.log("toVisit push neighbor=", neighbor.val);
 
           toVisitStack.push(neighbor);
         }
       }
       // set current to most recent neighbor in toVisit stack
     }
-    console.log("results:", results);
     return results
   }
 
   /** traverse graph with BDS and returns array of Node values */
-  breadthFirstSearch(start) { }
+  breadthFirstSearch(start) { 
+    let toVisitQueue = [start];
+    let visitedNodesQueue = new Set([start]);
+    let results = [start];
 
+    while (toVisitQueue.length>0){
+      let current = toVisitQueue.shift();
+      if(!visitedNodesQueue.has(current)){
+        visitedNodesQueue.add(current);
+        results.push(current.value);
+      }
+      for (let neighbor of current.adjacent) {
+        if (!visitedNodesQueue.has(neighbor)) {
+          toVisitQueue.push(neighbor);
+        }
+      }
+    }
+
+    return results
+
+  }
+
+  
   /** find the distance of the shortest path from the start vertex to the end vertex */
-  distanceOfShortestPath(start, end) { }
+  distanceOfShortestPath(start, end) { 
+    if(!this.nodes.has(start) || !this.nodes.has(end)){
+      return;
+    }
+    if(start===end) return 0;
+
+    let visitedNodesVertex = new Set([start]);
+    let nodeDistances = [[start, 0]];
+    let distances = [];
+    while(nodeDistances.length>0){
+      let [currentNode, distance] = nodeDistances.shift();
+
+      if(currentNode===end){
+        nodeDistances.shift();
+        distances.push(distance);
+      }
+      for(let neighbor of currentNode.adjacent){
+        if(!visitedNodesVertex.has(neighbor)){
+          visitedNodesVertex.add(neighbor);
+          nodeDistances.push([neighbor, distance+1]); 
+        }
+      }
+    }
+    console.log(distances);
+    return Math.min(...distances);
+    
+  }
 }
 
 module.exports = { Graph, Node };
