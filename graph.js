@@ -16,26 +16,82 @@ class Graph {
   }
 
   /** add Node instance and add it to nodes property on graph. */
-  addVertex(vertex) { }
+  addVertex(vertex) {
+    this.nodes.add(vertex);
+  }
 
   /** add array of new Node instances and adds to them to nodes property. */
-  addVertices(vertexArray) { }
+  addVertices(vertexArray) {
+    for (let vertex of vertexArray) {
+      this.nodes.add(vertex);
+    }
+  }
 
   /** add edge between vertices v1,v2 */
-  addEdge(v1, v2) { }
+  addEdge(v1, v2) {
+    v1.adjacent.add(v2);
+    v2.adjacent.add(v1);
+  }
 
   /** remove edge between vertices v1,v2 */
-  removeEdge(v1, v2) { }
+  removeEdge(v1, v2) {
+    v1.adjacent.delete(v2);
+    v2.adjacent.delete(v1);
+  }
 
   /** remove vertex from graph:
    *
    * - remove it from nodes property of graph
    * - update any adjacency lists using that vertex
    */
-  removeVertex(vertex) { }
+  removeVertex(vertex) {
+    // find the adjacencies - loop
+    // delete adjacency
+    for (let node of this.nodes) {
+      if (node.adjacent.has(vertex)) {
+        node.adjacent.delete(vertex);
+      }
+    }
+    // delete vertex
+    this.nodes.delete(vertex);
+  }
 
   /** traverse graph with DFS and returns array of Node values */
-  depthFirstSearch(start) { }
+
+  // build complex graph
+  //
+  //                       Q --P -- S
+  //                      /  \ |      \
+  //                     R     X   --  U
+  //                     | \   |  \   /
+  //                     |  \  |    V
+  //                      \    Y    |
+  //                       \     \  /
+  //                         T --- W
+  //
+
+  depthFirstSearch(start) {
+    // let current = start;
+    let toVisitStack = [start]; // neighbors to visit
+    let visitedNodesStack = new Set(start); // neighbors visited
+
+    while (toVisitStack.length > 0) {
+      let current = toVisitStack.pop();
+      console.log("current=", current);
+      if (!visitedNodesStack.has(current)) visitedNodesStack.add(current);
+      console.log("visitedNodesStack=", visitedNodesStack);
+
+      // add all neighbors to to visit stack if they haven't been visited
+      for (let neighbor of current.adjacent) {
+        if (!visitedNodesStack.has(neighbor)) {
+          console.log("toVisit push neighbor=", neighbor);
+          toVisitStack.push(neighbor);
+        }
+      }
+      // set current to most recent neighbor in toVisit stack
+    }
+    return visitedNodesStack
+  }
 
   /** traverse graph with BDS and returns array of Node values */
   breadthFirstSearch(start) { }
@@ -44,4 +100,4 @@ class Graph {
   distanceOfShortestPath(start, end) { }
 }
 
-module.exports = { Graph, Node }
+module.exports = { Graph, Node };
