@@ -73,24 +73,36 @@ class Graph {
   depthFirstSearch(start) {
     // let current = start;
     let toVisitStack = [start]; // neighbors to visit
-    let visitedNodesStack = new Set(start); // neighbors visited
+
+    let visitedNodesStack = new Set([start]); // neighbors visited
+    let results = [start];
+
 
     while (toVisitStack.length > 0) {
+      console.log("visit stack length:", toVisitStack.length);
+      console.log("to visit stack:", toVisitStack);
+
       let current = toVisitStack.pop();
-      console.log("current=", current);
-      if (!visitedNodesStack.has(current)) visitedNodesStack.add(current);
-      console.log("visitedNodesStack=", visitedNodesStack);
+
+      console.log("current node=", current);
+      if (!visitedNodesStack.has(current)) {
+        visitedNodesStack.add(current);
+        results.push(current.value);
+      }
+      console.log("visitedNodesStack after adding=", visitedNodesStack);
 
       // add all neighbors to to visit stack if they haven't been visited
       for (let neighbor of current.adjacent) {
         if (!visitedNodesStack.has(neighbor)) {
-          console.log("toVisit push neighbor=", neighbor);
+          console.log("toVisit push neighbor=", neighbor.val);
+
           toVisitStack.push(neighbor);
         }
       }
       // set current to most recent neighbor in toVisit stack
     }
-    return visitedNodesStack
+    console.log("results:", results);
+    return results
   }
 
   /** traverse graph with BDS and returns array of Node values */
